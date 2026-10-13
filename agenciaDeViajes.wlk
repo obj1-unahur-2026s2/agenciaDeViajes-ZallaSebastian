@@ -8,6 +8,8 @@ class Paks {
   }
   
   method valorFinalDelPack(beneficio) 
+
+  method premium(packs)  
 }
 
 object beneficios {
@@ -15,7 +17,7 @@ object beneficios {
   method agregarBeneficios(nuevosBeneficios) {
     beneficioOpcionales.add(nuevosBeneficios)
   }
-  method sumaTotalDeBeneficio() = beneficioOpcionales.sum()
+  method sumaTotalDeBeneficio() = beneficioOpcionales.sum({b => b.costo()})
 
 }
 
@@ -36,42 +38,61 @@ object adicionales {
 
 
 class Nacional inherits Paks {
-  var provinciaDeDestino
+  var property provinciaDeDestino
   const actividades = [] // es una lista de strings
   method agregarNuevaActividad(nuevaActividad) {
     actividades.add(nuevaActividad)
   }
- override method valorFinalDelPack(beneficio) =  (precioBase + beneficio.estaVigente())
-
+ override method valorFinalDelPack(beneficio) =  (precioBase + beneficio.sumaTotalDeBeneficios())
+ override method premium(packs) {
+   packs.duracionDeDias() + 10
+   coodinador.rolQueCumple() == "altamenteCalificado"
+ }
   
 }
 
 class Internacional inherits Paks{
-  var paisDeDestino
+  var property paisDeDestino
+  var property esInteresante 
   const escalas = []
   method agregarEscalas(nuevaEscala) {
     escalas.add(nuevaEscala)
   }
   method cantidadDeEscalas() = escalas.size()
   
-  override method valorFinalDelPack(beneficio) = (precioBase + beneficio.estaVigente()) * 0.8
+  override method valorFinalDelPack(beneficio) = (precioBase + beneficio.sumaTotalDeBeneficios()) * 0.8
+  override method premium(packs) {
+  esInteresante = true
+  packs.duracionDeDias() + 20
+  self.cantidadDeEscalas() == 0
+  }
 }
 
 
 object coodinador {
-    var rol = "guia"
+  var rol = "guia"
+
   const cantidadDeVaje = []
+
   method agrefarViajes(nuevoViaje) {
-    cantidadDeVaje.add(nuevoViaje)
+     cantidadDeVaje.add(nuevoViaje)
   }
   method cantidadDeViaje() = cantidadDeVaje.size() 
 
   method altamenteCalificado() =  cantidadDeVaje.size() > 20 && self.rolQueCumple() 
   
   method rolQueCumple() = rol
+
   method cambiarRol(nuevoRol) {
-    rol = nuevoRol
+      rol = nuevoRol
   }
+}
+
+class Provinciales inherits Nacional {
+  override method premium(packs) {
+   packs.actividades()
+   
+  } 
 }
 
 
