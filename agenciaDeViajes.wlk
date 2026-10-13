@@ -2,21 +2,36 @@ class Paks {
   var property duracionDeDias
   var property precioBase
   var property coordinadorACargo
+  const beneficioEspecials = []
+  method agregarBeneficios(beneficios) {
+    beneficioEspecials.add(beneficios)
+  }
   
-  method valorFinalDelPack(beneficio) = (precioBase + beneficio.estaVigente()) 
+  method valorFinalDelPack(beneficio) 
 }
 
-class BeneficiosEspecial {
-  var translado
-  var salaVIP
-  var adicionales
-  var property  estaVigente 
-  const beneficos = []
-  method agregarPacks(nuevospaks) {
-    beneficos.add(nuevospaks)
+object beneficios {
+  const beneficioOpcionales = []
+  method agregarBeneficios(nuevosBeneficios) {
+    beneficioOpcionales.add(nuevosBeneficios)
   }
-  method costo(paks) = beneficos.map({paks => paks.precioBase()})
- method estaVijente(paks) = beneficos.any(paks.estaVijente())
+  method sumaTotalDeBeneficio() = beneficioOpcionales.sum()
+
+}
+
+object trasladosPrivados {
+  var property costo = 2 
+  var property estaVigente = true
+}
+
+object salasVIP {
+   var property costo = 2
+   var property estaVigente = false
+}
+
+object adicionales {
+  var property costo = 2
+  var property estaVigente = true
 }
 
 
@@ -26,7 +41,7 @@ class Nacional inherits Paks {
   method agregarNuevaActividad(nuevaActividad) {
     actividades.add(nuevaActividad)
   }
-
+ override method valorFinalDelPack(beneficio) =  (precioBase + beneficio.estaVigente())
 
   
 }
@@ -39,7 +54,7 @@ class Internacional inherits Paks{
   }
   method cantidadDeEscalas() = escalas.size()
   
-  override method valorFinalDelPack(beneficio) = super(beneficio) * 0.8
+  override method valorFinalDelPack(beneficio) = (precioBase + beneficio.estaVigente()) * 0.8
 }
 
 
